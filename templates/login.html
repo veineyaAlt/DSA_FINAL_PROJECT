@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:420px; margin: 48px auto 0;">
+  <div class="appcard">
+    <h1 class="app-h app-h--alt" style="font-size:24px; margin-top:0;">{{ ic.snowflake() }} Log in</h1>
+    <form method="post">
+      <div class="form" style="grid-template-columns:1fr;">
+        <div class="field"><label for="f-email">Email</label>
+          <input id="f-email" type="email" name="email" placeholder="you@example.com" required></div>
+        <div class="field"><label for="f-pw">Password</label>
+          <input id="f-pw" type="password" name="password" placeholder="6+ characters" required></div>
+        <div class="btn-row"><button class="btn btn--primary btn--wide">Log in</button></div>
+      </div>
+    </form>
+    <p style="text-align:center; margin:18px 0 0; font-size:14.5px;">
+      No account? <a href="{{ url_for('register') }}">Sign up</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,301 @@
+{# Landing page: deals per design-taste-frontend (software):
+   palette green-black-bone (bg #161c1a surface #1f2725 ink #e3e2da accent #9fc7b8)
+   type urbanist, radius soft, buttons pill, hero centred, nav-split,
+   rhythm dark-band (the #app band on ground-inverse), close close-word, footer footer-dark,
+   mark ring. No shader effects, no moments — the app-frame and its fragments carry the page. #}
+<!doctype html>
+<html lang="en" data-type="software" data-radius="soft" data-buttons="pill" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Secret Santa: secret gift draws for your group</title>
+<meta name="description" content="Members join with one invite code, write wishlists with priorities, ban pairs, and the draw runs in seconds. Everyone gives exactly once.">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ vstatic('kit/system.css') }}">
+<link rel="stylesheet" href="{{ vstatic('kit/ui/cards.css') }}">
+<link rel="stylesheet" href="{{ vstatic('kit/motion/motion.css') }}">
+<link rel="stylesheet" href="{{ vstatic('kit/layout/layout.css') }}">
+<link rel="stylesheet" href="{{ vstatic('kit/icons/icon.css') }}">
+<style>
+:root {
+  --p-bg: #161c1a; --p-surface: #1f2725; --p-ink: #e3e2da; --p-muted: #8e948d;
+  --p-accent: #9fc7b8; --p-accent-ink: #161c1a; --p-action: #9fc7b8; --p-action-ink: #161c1a;
+  --p-inv-bg: #e3e2da; --p-inv-surface: #d3d2cb; --p-inv-ink: #161c1a; --p-inv-muted: #555a55;
+  --p-inv-accent: #161c1a; --p-inv-accent-ink: #e3e2da; --p-inv-action: #161c1a; --p-inv-action-ink: #e3e2da;
+  --font-display: "Urbanist", system-ui, sans-serif;
+  --font-text: "Urbanist", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 500;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+}
+.santa-brand { display:inline-flex; align-items:center; gap:.45em; }
+.santa-brand svg { width:1.2em; height:1.2em; color:var(--accent); }
+
+/* the app window (the client's own UI as live HTML) */
+.swin { background: var(--p-surface); border: 1px solid color-mix(in srgb, var(--p-ink) 12%, transparent);
+        border-radius: 12px; overflow: hidden; box-shadow: 0 24px 60px -28px rgb(0 0 0 / .55); }
+.swin__bar { display:flex; align-items:center; gap:10px; padding:10px 16px;
+             border-bottom:1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
+             font: 400 13px/1.3 var(--font-text); color: var(--p-muted); }
+.swin__bar b { color: var(--p-ink); font-weight: 500; }
+.swin__bar .sp { flex: 1; }
+.swin__bar .code { font: 400 12px/1 var(--font-mono); color: var(--p-accent);
+                   border: 1px solid color-mix(in srgb, var(--p-accent) 45%, transparent);
+                   border-radius: 99px; padding: 3px 10px; letter-spacing: .12em; }
+.swin__body { display:grid; grid-template-columns: 240px minmax(0,1fr); min-height: 360px; }
+.swin__list { border-right:1px solid color-mix(in srgb, var(--p-ink) 10%, transparent);
+              padding: 12px; display:grid; align-content:start; gap:2px; }
+.swin__list .t { display:grid; grid-template-columns: 26px 1fr auto; gap:1px 10px; align-items:center;
+                 padding:8px 10px; border-radius:9px; font:400 13px/1.4 var(--font-text); }
+.swin__list .t.is-on { background: color-mix(in srgb, var(--p-ink) 6%, transparent); }
+.swin__list i { grid-row:1 / span 1; width:26px; height:26px; border-radius:50%; display:grid;
+                place-items:center; font:600 11px/1 var(--font-text); font-style:normal;
+                color:var(--p-accent-ink); background: var(--p-accent); }
+.swin__list .t:nth-child(3) i { background-color:#c9a86a; color:#221c10; }
+.swin__list .t:nth-child(4) i { background-color:#9c8fd1; color:#1b1830; }
+.swin__list .t:nth-child(5) i { background-color:#d187a0; color:#2b1520; }
+.swin__list b { font-weight:500; color: var(--p-ink); }
+.swin__list small { grid-column:2 / -1; color: var(--p-muted); }
+.swin__list .hd { grid-column:1 / -1; font:500 11px/1 var(--font-mono); letter-spacing:.08em;
+                  text-transform:uppercase; color:var(--p-muted); padding:4px 10px 8px; }
+.swin__main { padding:16px 20px 20px; display:grid; align-content:start; gap:12px; min-width:0; }
+.swin__main h3 { margin:0; font:500 17px/1.3 var(--font-text); color:var(--p-ink); letter-spacing:-0.01em; }
+.swin__main h3 small { font:400 12px/1 var(--font-mono); color:var(--p-muted); margin-left:8px; letter-spacing:.04em; }
+.wtab { width:100%; border-collapse:separate; border-spacing:0; font:400 13px/1.5 var(--font-text); }
+.wtab th { text-align:left; font:500 10.5px/1 var(--font-mono); letter-spacing:.09em; text-transform:uppercase;
+           color:var(--p-muted); padding: 6px 8px; border-bottom:1px solid color-mix(in srgb, var(--p-ink) 10%, transparent); }
+.wtab td { padding:8px; border-bottom:1px solid color-mix(in srgb, var(--p-ink) 7%, transparent); color:var(--p-ink); }
+.wtab tr:last-child td { border-bottom:0; }
+.wtab .pr { display:inline-block; min-width:20px; text-align:center; border-radius:6px;
+            font:500 11px/1.6 var(--font-mono); }
+.pr-1 { background:#b95c5c; color:#fff; } .pr-2 { background:#607a6d; color:#fff; } .pr-3 { background:#4b5752; color:#cfd6d1; }
+.rate { display:inline-flex; gap:2px; color:#e3b341; }
+.rate svg { width:13px; height:13px; }
+.rate .off { color: color-mix(in srgb, var(--p-muted) 60%, transparent); }
+
+/* feature fragments (ui fragments on lit panels) */
+/* feature fragments: flat inset surface, fixed height */
+.fcard .frag { height: 168px; background: color-mix(in srgb, var(--p-ink) 6%, var(--p-surface));
+               border: 1px solid color-mix(in srgb, var(--p-ink) 9%, transparent);
+               border-radius: 10px; margin-top: var(--s-4); display: grid; place-items: center; overflow: hidden; }
+.frag .bar { height:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:0 20px; }
+.frag .chip { display:inline-flex; align-items:center; gap:8px; background: color-mix(in srgb, var(--p-ink) 8%, transparent);
+              border:1px solid color-mix(in srgb, var(--p-ink) 14%, transparent); border-radius:10px;
+              padding:10px 14px; font:400 13.5px/1 var(--font-text); color: var(--p-ink); }
+.frag .chip svg { width:16px; height:16px; color: var(--accent); }
+.frag .rows { display:grid; gap:8px; width:min(100%, 300px); }
+.frag .rows .r { display:flex; gap:10px; align-items:center; font:400 13px/1 var(--font-text); color:var(--p-ink); }
+.frag .rows .r i { width:8px; height:8px; border-radius:2px; background:var(--accent); flex:none; }
+.frag .rows .r span { margin-left:auto; color:var(--p-muted); }
+
+/* steps */
+.steps { counter-reset: st; }
+.steps li { counter-increment: st; display:grid; grid-template-columns: 34px minmax(0,1fr); gap:14px;
+            padding:14px 0; border-top:1px solid color-mix(in srgb, var(--p-ink) 10%, transparent); }
+.steps li::before { content: counter(st, decimal-leading-zero); font: 400 15px/1.5 var(--font-mono);
+                    color: var(--accent); }
+.steps li b { display:block; font:500 16px/1.3 var(--font-text); color: var(--p-ink); }
+.steps li span { color: var(--p-muted); }
+.steps { list-style:none; margin:0; padding:0; }
+
+/* the fade on the hero window like kit's centred hero */
+.hero__window { max-width: 980px; margin: 40px auto -160px; }
+.hero { padding-bottom: 200px; }
+@media (max-width: 719px) { .hero__window { margin-bottom: -80px; } .hero { padding-bottom: 120px; } }
+.hfade { max-height: 520px; overflow: visible;
+  -webkit-mask: linear-gradient(#000 72%, transparent 98%); mask: linear-gradient(#000 72%, transparent 98%); }
+
+/* nav--split middle brand on every width */
+header.nav .santa-brand { font: 500 22px/1 var(--font-display); letter-spacing:-0.02em; color:var(--p-ink); text-decoration:none; }
+
+footer .santa-brand svg { color: var(--accent); }
+
+/* feature grid: three across (kit .grid needs its own spans otherwise) */
+.fcards > .card { grid-column: auto / span 4; }
+@media (max-width: 1023px) {
+  .fcards { grid-template-columns: 1fr; }
+  .fcard .frag { height: 150px; }
+}
+.fcard h3 { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 6px; }
+.fcard p { color: var(--p-muted); font-size: 14.5px; }
+.hero { padding-bottom: 190px; }
+.hero__window { max-width: 980px; margin: 44px auto -150px; }
+.ground-inverse { padding-top: 72px; padding-bottom: 72px; }
+.ground-inverse .swin { box-shadow: 0 30px 70px -32px rgb(0 0 0 / .35); }
+
+</style>
+</head>
+<body id="top">
+<header class="nav" aria-label="Main">
+  <div class="wrap nav__bar">
+    <nav class="nav__links" aria-label="Sections">
+      <div class="nav__item"><a class="nav__link" href="#app">The app</a></div>
+      <div class="nav__item"><a class="nav__link" href="#features">Features</a></div>
+    </nav>
+    <a class="santa-brand" href="#top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 17.2C5.1 12.4 7.4 7.2 12.2 6.5c3.9-.6 7.1 1.9 7.3 5.3.06 1 .0 1.9-.2 2.7"/><path d="M4.6 17.6c1.1-1.6 13.7-1.6 14.8 0-2 1.1-12.8 1.1-14.8 0Z"/><circle cx="20.1" cy="10.6" r="1.55"/></svg>
+      Secret Santa
+    </a>
+    <div class="nav__actions">
+      <a class="nav__link" href="/login">Log in</a>
+      <a class="btn btn--primary" href="/register">Start a group</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero hero--centred" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <a class="pill" href="#app"><span>3 steps</span><span class="muted">one invite code</span></a>
+        <h1 id="hero-h">Secret gift draws for your group</h1>
+        <p class="hero__lead">Members join with one invite code, write wishlists with priorities and ban pairs you must not draw. The draw runs in seconds and everyone gives exactly once.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="/register">Start a group</a><a class="btn btn--secondary" href="/login">Join with a code</a></div>
+      </div>
+      <div class="hero__window hfade" role="img" aria-label="The group page: member wishlists beside a drawn receiver's wishlist">
+        <div class="swin">
+          <div class="swin__bar"><span><b>Office Christmas party 2026</b> · 5 members</span><span class="sp"></span><span class="code">4RK3GQP7</span></div>
+          <div class="swin__body">
+            <div class="swin__list" aria-hidden="true">
+              <div class="hd">Members</div>
+              <div class="t is-on"><i>AL</i><b>Alisher</b><small>2 wishes</small></div>
+              <div class="t"><i style="background:#c9a86a;color:#221c10">DL</i><b>Dilnoza</b><small>2 wishes</small></div>
+              <div class="t"><i style="background:#9c8fd1;color:#1b1830">NK</i><b>Nikita</b><small>1 wish</small></div>
+              <div class="t"><i style="background:#d187a0;color:#2b1520">SB</i><b>Sabina</b><small>1 wish</small></div>
+              <div class="t"><i style="background:#7fae9b;color:#122019">TM</i><b>Temur</b><small>1 wish</small></div>
+            </div>
+            <div class="swin__main">
+              <h3>Who I gift <small>secret code 9P2W-4RK3</small></h3>
+              <table class="wtab">
+                <thead><tr><th>Pr</th><th>Wish</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="pr pr-1">1</span></td><td>Cat grooming brush</td><td style="color:var(--p-muted)">I have a long-haired cat</td></tr>
+                  <tr><td><span class="pr pr-2">2</span></td><td>Candles</td><td style="color:var(--p-muted)">—</td></tr>
+                </tbody>
+              </table>
+              <table class="wtab">
+                <thead><tr><th>Pair status</th><th>Rating</th></tr></thead>
+                <tbody><tr>
+                  <td>Gift delivered</td>
+                  <td><span class="rate" aria-label="rated 5 of 5">
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg>
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg>
+                  </span></td>
+                </tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section ground-inverse" id="app" aria-labelledby="app-h">
+    <div class="wrap" style="align-content:center; height:auto;">
+      <div class="section-head">
+        <h2 id="app-h">The group page does the bookkeeping <span class="muted">invite code, member list, every wish and the drawn pair on one screen.</span></h2>
+      </div>
+      <div class="swin" style="max-width:1080px; margin:0 auto;">
+        <div class="swin__bar"><span><b>Office Christmas party 2026</b> · 5 members</span><span class="sp"></span><span class="code">4RK3GQP7</span></div>
+        <div class="swin__body">
+          <div class="swin__list" aria-hidden="true">
+            <div class="hd">Members</div>
+            <div class="t is-on"><i>AL</i><b>Alisher</b><small>2 wishes</small></div>
+            <div class="t"><i style="background:#c9a86a;color:#221c10">DL</i><b>Dilnoza</b><small>2 wishes</small></div>
+            <div class="t"><i style="background:#9c8fd1;color:#1b1830">NK</i><b>Nikita</b><small>1 wish</small></div>
+            <div class="t"><i style="background:#d187a0;color:#2b1520">SB</i><b>Sabina</b><small>1 wish</small></div>
+            <div class="t"><i style="background:#7fae9b;color:#122019">TM</i><b>Temur</b><small>1 wish</small></div>
+          </div>
+          <div class="swin__main">
+            <h3>Organizer panel <small>draw button in open status</small></h3>
+            <table class="wtab">
+              <thead><tr><th>Giver</th><th>Receiver</th><th>Rating after</th></tr></thead>
+              <tbody>
+                <tr><td>Alisher</td><td>Dilnoza</td><td><span class="rate" aria-label="5 of 5"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.8l-5.1 2.6 1-5.6-4.1-4 5.7-.8z"/></svg></span></td></tr>
+                <tr><td>Dilnoza</td><td>Nikita</td><td style="color:var(--p-muted)">waiting</td></tr>
+                <tr><td>Nikita</td><td>Temur</td><td style="color:var(--p-muted)">waiting</td></tr>
+              </tbody>
+            </table>
+            <table class="wtab">
+              <thead><tr><th>Pair exclusions</th><th>Reason</th></tr></thead>
+              <tbody><tr><td>Dilnoza does not gift Nikita</td><td style="color:var(--p-muted)">married since September</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="feat-h">Built-in rules for real families <span class="muted">the draw algorithm honors every ban, or it refuses and says why.</span></h2>
+      </div>
+      <div class="grid fcards">
+        <article class="card fcard span-4">
+          <h3>Collect wishlists with priorities</h3>
+          <p>Every member writes wishes with a 1 to 3 priority, links and notes attached.</p>
+          <div class="frag" role="img" aria-label="Three wish rows with priority chips">
+            <div class="bar" aria-hidden="true"><div class="rows">
+                <div class="r"><span class="pr pr-1">1</span>Cat grooming brush<span>15 €</span></div>
+                <div class="r"><span class="pr pr-2">2</span>Candles<span>8 €</span></div>
+                <div class="r"><span class="pr pr-3">3</span>Pu-erh tea<span>12 €</span></div>
+              </div></div>
+          </div>
+        </article>
+        <article class="card fcard span-4">
+          <h3>Ban pairs the draw honors</h3>
+          <p>Husbands, in-laws or exes: the draw skips banned pairs or refuses with a reason.</p>
+          <div class="frag" role="img" aria-label="A pair exclusion chip beside a check">
+            <div class="bar" aria-hidden="true">
+                <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.3" width="14" height="10.2" rx="2"/><path d="M8.2 10.3V8a3.8 3.8 0 0 1 7.6 0v2.3"/><circle cx="12" cy="15.2" r="1.5"/></svg>Dilnoza — Nikita</span>
+                <span class="chip" style="color:var(--p-muted)">respected in the draw</span>
+            </div>
+          </div>
+        </article>
+        <article class="card fcard span-4">
+          <h3>Rate each exchange 1 to 5</h3>
+          <p>After the party, the giver rates the experience and the organizer sees the report.</p>
+          <div class="frag" role="img" aria-label="Three wish rows">
+            <div class="bar" aria-hidden="true"><div class="rows">
+                <div class="r"><i></i>Alisher gifts Dilnoza<span>5.0</span></div>
+                <div class="r"><i></i>Dilnoza gifts Nikita<span>4.0</span></div>
+                <div class="r"><i></i>Nikita gifts Temur<span>4.5</span></div>
+              </div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head"><h2 id="close-h">Draw before the party <span class="muted">three steps, no accounts to chase, everyone gives once.</span></h2></div>
+      <a class="btn btn--primary btn--xl" href="/register">Start a group<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-5"><a class="footer__mark santa-brand" href="#top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 17.2C5.1 12.4 7.4 7.2 12.2 6.5c3.9-.6 7.1 1.9 7.3 5.3.06 1 .0 1.9-.2 2.7"/><path d="M4.6 17.6c1.1-1.6 13.7-1.6 14.8 0-2 1.1-12.8 1.1-14.8 0Z"/><circle cx="20.1" cy="10.6" r="1.55"/></svg>
+          Secret Santa</a></div>
+        <div class="span-3 start-7 footer__col"><h4>Product</h4><ul><li><a href="#app">The app</a></li><li><a href="#features">Features</a></li></ul></div>
+        <div class="span-3 footer__col"><h4>Get started</h4><ul><li><a href="/register">Sign up</a></li><li><a href="/login">Log in</a></li></ul></div>
+      </div>
+      <div class="footer__legal"><span>A Database Systems CS25 semester project, Fall 2026.</span><span>Default demo logins: alisher@ex.com, password demo1234.</span></div>
+    </div>
+  </div>
+</footer>
+<script type="module" src="{{ vstatic('kit/system.js') }}"></script>
+</body>
+</html>

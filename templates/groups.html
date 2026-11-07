@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="app-h">{{ ic.gift() }} My groups</h1>
+
+<div class="grid2">
+  <div class="appcard" style="margin-bottom:0;">
+    <h2 class="sub">{{ ic.tree() }} Create a group</h2>
+    <form method="post" action="{{ url_for('group_create') }}">
+      <div class="form" style="grid-template-columns:1fr;">
+        <div class="field"><label>Name</label>
+          <input name="name" placeholder="Office Christmas party (3–80 chars)" required></div>
+        <div class="field"><label>Event date</label>
+          <input type="date" name="event_date" required></div>
+        <div class="field"><label>Join deadline</label>
+          <input type="date" name="join_deadline" required></div>
+        <div class="field"><label>Budget hint</label>
+          <input name="budget_hint" type="number" min="1" placeholder="optional"></div>
+        <div class="btn-row"><button class="btn btn--primary btn--wide">Create</button></div>
+      </div>
+    </form>
+  </div>
+  <div class="appcard" style="margin-bottom:0;">
+    <h2 class="sub">{{ ic.lock() }} Join with an invite code</h2>
+    <form method="post" action="{{ url_for('group_join') }}">
+      <div class="form" style="grid-template-columns:1fr;">
+        <div class="field"><label>Invite code</label>
+          <input name="code" placeholder="AB12CD34" style="text-transform:uppercase; letter-spacing:.14em;
+                 font-family:var(--font-mono); text-align:center;" required></div>
+        <div class="btn-row"><button class="btn btn--primary btn--wide">Join</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<h2 class="sub" style="margin-top:34px;">{{ ic.sock() }} My memberships</h2>
+{% if groups %}
+<table class="t">
+  <thead><tr><th>Group</th><th>Event</th><th class="num">Members</th><th>Status</th><th>Code</th></tr></thead>
+  <tbody>
+  {% for grp in groups %}
+    <tr>
+      <td><a href="{{ url_for('group_page', gid=grp.group_id) }}"><b>{{ grp.group_name }}</b></a></td>
+      <td>{{ grp.event_date }}</td>
+      <td class="num">{{ grp.member_count }}</td>
+      <td>{% if grp.status == 'open' %}<span class="bdg bdg--open">open</span>
+          {% elif grp.status == 'drawn' %}<span class="bdg bdg--drawn">drawn</span>
+          {% else %}<span class="bdg bdg--closed">closed</span>{% endif %}</td>
+      <td><code>{{ grp.join_code }}</code></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="t-empty">No groups yet — create the first one above, or join one with a code.</div>
+{% endif %}
+
+{% if open_groups %}
+<h2 class="sub" style="margin-top:30px;">{{ ic.globe() }} Open groups</h2>
+<table class="t">
+  <thead><tr><th>Group</th><th>Event</th><th>Join until</th><th class="num">Members</th><th class="num">Wishes</th><th>Budget</th></tr></thead>
+  <tbody>
+  {% for v in open_groups %}
+    <tr>
+      <td><b>{{ v.group_name }}</b></td>
+      <td>{{ v.event_date }}</td>
+      <td>{{ v.join_deadline }}</td>
+      <td class="num">{{ v.member_count }}</td>
+      <td class="num">{{ v.wish_count }}</td>
+      <td>{% if v.budget_hint %}≤ {{ v.budget_hint }}{% else %}—{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p class="meta">Enter an invite code above to join one.</p>
+{% endif %}
+{% endblock %}

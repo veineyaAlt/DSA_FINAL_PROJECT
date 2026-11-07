@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex" style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+  <h1 class="app-h" style="margin:0;">{{ ic.tree() }} {{ grp.group_name }}</h1>
+  <div style="padding-top:10px;">
+    {% if grp.status == 'open' %}<span class="bdg bdg--open">open · join until {{ grp.join_deadline }}</span>
+    {% elif grp.status == 'drawn' %}<span class="bdg bdg--drawn">drawn</span>
+    {% else %}<span class="bdg bdg--closed">closed</span>{% endif %}
+  </div>
+</div>
+<p class="meta">
+  Event date: {{ grp.event_date }}
+  {% if grp.budget_hint %} · Budget: ≤ {{ grp.budget_hint }}{% endif %}
+  · Invite code: <code>{{ grp.join_code }}</code>
+</p>
+
+{% if grp.status == 'open' %}
+<div class="appcard">
+  <h2 class="sub">{{ ic.gift() }} My wishlist</h2>
+  {% if my_wishes %}
+    {% for w in my_wishes %}
+      <div class="wish">
+        <span class="bdg bdg--p{{ w.priority }}">{{ w.priority }}</span>
+        <span class="ttl">{{ w.wish_title }}</span>
+        <span>{% if w.wish_url %}<a href="{{ w.wish_url }}">link</a>{% endif %}</span>
+        <form method="post" action="{{ url_for('wish_del', gid=grp.group_id, wid=w.wish_id) }}"
+              onsubmit="return confirm('Delete this wish?')">
+          <button class="ibtn" type="submit" title="Delete">{{ ic.x() }}</button>
+        </form>
+        {% if w.wish_note %}<span class="note">{{ w.wish_note }}</span>{% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="t-empty">Wishlist is empty — add your first wish below.</div>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('wish_add', gid=grp.group_id) }}" class="rowform">
+    <div class="field"><input name="title" placeholder="What I want" required></div>
+    <div class="field"><input name="url" placeholder="Link (optional)"></div>
+    <div class="field"><input name="note" placeholder="Note"></div>
+    <div class="field"><select name="priority">
+      <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option>
+    </select></div>
+    <div><button class="btn btn--primary" style="width:100%;">Add</button></div>
+  </form>
+</div>
+{% endif %}
+
+{% if grp.status == 'drawn' %}
+<div class="giftbox">
+  <h2 class="sub" style="margin-top:0;">{{ ic.lock() }} Who I gift</h2>
+  {% if recv %}
+    <p class="name">{{ recv.display_name }}
+      <span class="code">secret · {{ recv.secret_code }}</span></p>
+    {% if recv_wishes %}
+      {% for w in recv_wishes %}
+        <div class="wish" style="border-color: color-mix(in srgb, var(--accent) 14%, transparent);">
+          <span class="bdg bdg--p{{ w.priority }}">{{ w.priority }}</span>
+          <span class="ttl">{{ w.wish_title }}</span>
+          <span>{% if w.wish_url %}<a href="{{ w.wish_url }}">link</a>{% endif %}</span>
+          <span></span>
+          {% if w.wish_note %}<span class="note">{{ w.wish_note }}</span>{% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="t-empty">No wishlist from this person yet — time to improvise.</div>
+    {% endif %}
+
+    {% if feedback %}
+      <p style="margin:16px 0 0;">My rating: {{ ic.stars(feedback.rating) }}
+        {% if feedback.comment %}<span class="meta" style="display:inline;">“{{ feedback.comment }}”</span>{% endif %}</p>
+    {% else %}
+      <form method="post" action="{{ url_for('feedback_add', gid=grp.group_id) }}"
+            class="rowform" style="margin-top:16px;">
+        <div class="field">
+          <select name="rating">
+            {% for i in range(1,6) %}<option value="{{ i }}">{{ '·' * i }}{{ i }} / 5</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field"><input name="comment" placeholder="Comment (optional)"></div>
+        <div style="display:flex; align-items:center;"><button class="btn btn--primary">Submit rating</button></div>
+      </form>
+    {% endif %}
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="appcard">
+  <h2 class="sub">{{ ic.users() }} Members</h2>
+  {% for m in members %}
+    <div class="mrow">
+      <span class="ava" {% if loop.index0 % 4 == 1 %}style="background:#c9a86a;color:#221c10"{% elif loop.index0 % 4 == 2 %}style="background:#9c8fd1;color:#1b1830"{% elif loop.index0 % 4 == 3 %}style="background:#d187a0;color:#2b1520"{% endif %}>{{ m.display_name[:2]|upper }}</span>
+      <b>{{ m.display_name }}</b>{% if m.user_id == g.user.user_id %} <span class="meta" style="display:inline;">(you)</span>{% endif %}
+      <small>{{ m.wish_count }} wish{{ '' if m.wish_count == 1 else 'es' }}</small>
+    </div>
+  {% endfor %}
+</div>
+
+{% if org %}
+<div class="appcard">
+  <h2 class="sub">{{ ic.clipboard() }} Organizer panel</h2>
+
+  {% if grp.status == 'drawn' %}
+    {% if report %}
+      <p style="margin:0 0 8px;">Reviews: <b>{{ report.reviews_count }}</b> · average
+        {{ ic.stars((report.avg_rating|round(0, 'floor')|int)) }}
+        <b class="num">{{ report.avg_rating }} / 5</b></p>
+      <div class="orggrid">
+        <table class="t">
+          <thead><tr><th>Giver</th><th>Receiver</th><th>Rating</th></tr></thead>
+          <tbody>{% for row in gift_rows %}
+            <tr><td>{{ row.giver }}</td><td>{{ row.receiver }}</td>
+              <td>{% if row.rating %}{{ ic.stars(row.rating) }}{% else %}<span class="meta" style="display:inline;">—</span>{% endif %}</td></tr>
+          {% endfor %}</tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="t-empty">No ratings yet.</div>
+    {% endif %}
+    <hr style="border:0; border-top:1px solid var(--line); margin:18px 0;">
+  {% endif %}
+
+  {% if grp.status == 'open' %}
+    <h3 class="sub" style="font-size:16px; margin-top:4px;">Pair exclusions</h3>
+    {% if exclusions %}
+      {% for e in exclusions %}
+        <div class="wish">
+          <span class="bdg bdg--p1" style="background:#8b3a3a;">not gift</span>
+          <span class="ttl">{{ e.from_name }} → {{ e.target_name }}</span>
+          <span class="meta" style="display:inline;">{{ e.reason or '' }}</span>
+          <form method="post" action="{{ url_for('exclude_del', gid=grp.group_id, eid=e.exclusion_id) }}">
+            <button class="ibtn" type="submit" title="Delete">{{ ic.x() }}</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="t-empty">No exclusions yet.</div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('exclude_add', gid=grp.group_id) }}" class="rowform" style="margin-top:14px;">
+      <div class="field"><select name="user_id">
+        {% for m in members %}<option value="{{ m.user_id }}">{{ m.display_name }}</option>{% endfor %}
+      </select></div>
+      <div class="field"><select name="target_id">
+        {% for m in members %}<option value="{{ m.user_id }}">{{ m.display_name }}</option>{% endfor %}
+      </select></div>
+      <div class="field"><input name="reason" placeholder="Reason"></div>
+      <div></div>
+      <div><button class="btn btn--primary" style="width:100%;">Add</button></div>
+    </form>
+    <p class="meta" style="margin-top:8px;">The first member will not gift the second one.</p>
+
+    <div style="margin-top:18px;">
+      <form method="post" action="{{ url_for('group_draw', gid=grp.group_id) }}"
+            onsubmit="return confirm('Run the draw? The member list can no longer change!')">
+        <button class="btn btn--primary btn--wide">{{ ic.dice("icon") }} Run the draw</button>
+      </form>
+    </div>
+  {% endif %}
+
+  <hr style="border:0; border-top:1px solid var(--line); margin:20px 0;">
+  <form method="post" action="{{ url_for('group_delete', gid=grp.group_id) }}"
+        onsubmit="return confirm('Delete the group and all its data?')">
+    <button class="btn btn--secondary btn--sm">Delete group</button>
+  </form>
+</div>
+{% endif %}
+
+{% endblock %}

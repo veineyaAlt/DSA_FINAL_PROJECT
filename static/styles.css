@@ -1,0 +1,370 @@
+/* ============================================================
+   Secret Santa — flat festive theme (no gradients)
+   ============================================================ */
+:root {
+    --bg:        #0b1622;
+    --panel:     #122031;
+    --panel-2:   #0f1b29;
+    --border:    #24384d;
+    --border:    #23384d;
+    --text:      #e8eef6;
+    --muted:     #93a7bd;
+    --red:       #d64545;
+    --red-dark:  #b23535;
+    --green:     #2f9e6e;
+    --green-dark:#23835b;
+    --gold:      #e3b341;
+    --link:      #86b7ff;
+    --snow:      #fff;
+}
+
+html { scroll-behavior: smooth; }
+
+body.santa-theme {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* снежный фон рисует canvas под содержимым */
+#snowfall {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body.santa-theme > nav,
+body.santa-theme main,
+body.santa-theme footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------------- navbar ---------------- */
+body.santa-theme .navbar {
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--border);
+}
+body.santa-theme .navbar-brand {
+    color: var(--text);
+    letter-spacing: .02em;
+    display: inline-flex; align-items: center; gap: .45rem;
+}
+body.santa-theme .navbar-brand .santa-cap {
+    display: inline-block;
+    animation: cap-bob 3.2s ease-in-out infinite;
+    transform-origin: 50% 80%;
+}
+@keyframes cap-bob {
+    0%, 100% { transform: rotate(-6deg) translateY(0); }
+    50%      { transform: rotate(7deg)  translateY(-2px); }
+}
+body.santa-theme .navbar .text-muted { color: var(--muted) !important; }
+
+/* ---------------- cards (with staggered entrance) ---------------- */
+body.santa-theme .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    animation: rise .55s cubic-bezier(.2,.7,.2,1) both;
+}
+body.santa-theme main > .card:nth-of-type(1) { animation-delay: .04s; }
+body.santa-theme main > .card:nth-of-type(2) { animation-delay: .10s; }
+body.santa-theme main > .card:nth-of-type(3) { animation-delay: .16s; }
+body.santa-theme main > .card:nth-of-type(4) { animation-delay: .22s; }
+body.santa-theme main > .row .card:nth-of-type(1) { animation-delay: .06s; }
+body.santa-theme main > .row .card:nth-of-type(2) { animation-delay: .12s; }
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* та же анимация для блока «кого я дарю» */
+body.santa-theme .card.border-primary {
+    border-color: var(--gold) !important;
+    animation: gift-pop .7s cubic-bezier(.2,.9,.25,1.35) both;
+}
+body.santa-theme .card.border-danger {
+    border-color: var(--border) !important;
+}
+
+@keyframes gift-pop {
+    0%   { opacity: 0; transform: scale(.92) translateY(10px); }
+    60%  { opacity: 1; transform: scale(1.02) translateY(0); }
+    80%  { transform: scale(.99); }
+    100% { transform: scale(1); }
+}
+
+/* ---------------- buttons ---------------- */
+body.santa-theme .btn {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+body.santa-theme .btn:hover  { transform: translateY(-2px); }
+body.santa-theme .btn:active { transform: translateY(0); }
+body.santa-theme .btn-primary {
+    background: var(--green); border-color: var(--green);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+body.santa-theme .btn-primary:hover {
+    background: var(--green-dark); border-color: var(--green-dark);
+    box-shadow: 0 6px 14px rgba(47,158,110,.28);
+}
+body.santa-theme .btn-success {
+    background: var(--green); border-color: var(--green);
+}
+body.santa-theme .btn-success:hover { background: var(--green-dark); }
+body.santa-theme .btn-outline-primary { color: var(--link); border-color: var(--border); }
+body.santa-theme .btn-outline-primary:hover { background: var(--border); color: var(--text); }
+body.santa-theme .btn-outline-danger { color: var(--red); border-color: var(--red); }
+body.santa-theme .btn-outline-danger:hover { background: var(--red); color: #fff; }
+body.santa-theme .btn-outline-secondary { color: var(--muted); border-color: var(--border); }
+body.santa-theme .btn-outline-secondary:hover { background: var(--border); color: var(--text); }
+body.santa-theme .btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+/* ---------------- forms ---------------- */
+body.santa-theme .form-control,
+body.santa-theme .form-select {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+}
+body.santa-theme .form-control::placeholder { color: var(--muted); }
+body.santa-theme .form-control:focus,
+body.santa-theme .form-select:focus {
+    background: var(--panel-2);
+    border-color: var(--gold);
+    color: var(--text);
+    box-shadow: 0 0 0 .18rem rgba(227,179,65,.22);
+}
+body.santa-theme .form-label { color: var(--muted); }
+
+/* ---------------- tables ---------------- */
+body.santa-theme .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text);
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text);
+}
+body.santa-theme .table thead th {
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    border-color: var(--border);
+}
+body.santa-theme .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(255,255,255,.02);
+    color: var(--text);
+}
+body.santa-theme .table-hover > tbody > tr:hover > * {
+    --bs-table-hover-bg: rgba(134,183,255,.06);
+    color: var(--text);
+}
+
+/* ---------------- alerts ---------------- */
+body.santa-theme .alert {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    animation: rise .4s ease both;
+}
+body.santa-theme .alert-success { background: #13301f; color: #b8e6cd; border-color: #1f4a30; }
+body.santa-theme .alert-danger  { background: #31161a; color: #f2b8bb; border-color: #57232a; }
+body.santa-theme .alert-warning { background: #332a14; color: #efdc9f; border-color: #57461c; }
+body.santa-theme .alert-info    { background: #14283f; color: #bcd5f2; border-color: #23415f; }
+
+/* ---------------- typography / links ---------------- */
+body.santa-theme a { color: var(--link); }
+body.santa-theme a:hover { color: #b0d0ff; }
+body.santa-theme h1, body.santa-theme h2, body.santa-theme h3 { color: var(--text); }
+body.santa-theme .text-muted { color: var(--muted) !important; }
+body.santa-theme code {
+    color: var(--gold);
+    background: #1a2a3d;
+    padding: .1em .45em;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+/* ---------------- badges ---------------- */
+body.santa-theme .badge.bg-success { background: var(--green) !important; }
+body.santa-theme .badge.bg-primary { background: #3d6ea5 !important; }
+body.santa-theme .badge.bg-secondary { background: #3a4c5f !important; }
+body.santa-theme .badge.bg-danger { background: var(--red) !important; }
+body.santa-theme .badge.bg-warning.text-dark { background: var(--gold) !important; color: #20160a !important; }
+
+/* ---------------- stars ---------------- */
+body.santa-theme .text-warning { color: var(--gold) !important; }
+
+/* ---------------- footer ---------------- */
+body.santa-theme footer {
+    color: var(--muted);
+    font-size: .85rem;
+    padding-bottom: 2.5rem;
+}
+
+/* ---------------- horizontal rule ---------------- */
+body.santa-theme hr { border-color: var(--border); opacity: 1; }
+
+/* ---------------- snowflakes in headings ---------------- */
+.snow-cap::before { content: "❄ "; color: var(--link); }
+.snow-cap::after  { content: " ❄"; color: var(--link); }
+
+/* ---------------- конфетти (JS создаёт div.confetti) ---------------- */
+.confetti {
+    position: fixed;
+    top: -12px;
+    z-index: 2000;
+    pointer-events: none;
+    width: 8px;
+    height: 14px;
+    border-radius: 2px;
+    animation: confetti-fall var(--dur, 2.8s) linear var(--delay, 0s) both;
+}
+@keyframes confetti-fall {
+    0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(104vh) rotate(var(--spin, 540deg)); opacity: 0; }
+}
+
+/* ---------------- accessibility ---------------- */
+@media (prefers-reduced-motion: reduce) {
+    body.santa-theme .card,
+    body.santa-theme .alert,
+    body.santa-theme .navbar-brand .santa-cap {
+        animation: none !important;
+    }
+    #snowfall { display: none; }
+}
+
+/* ============================================================
+   Hand-drawn inline icons (self-made SVG set)
+   ============================================================ */
+body.santa-theme .icon {
+    width: 1.05em;
+    height: 1.05em;
+    vertical-align: -0.14em;
+    flex: none;
+}
+body.santa-theme h2.head-ic {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--text);
+}
+body.santa-theme h2.head-ic .icon {
+    color: var(--red);
+    width: 1.15em;
+    height: 1.15em;
+}
+body.santa-theme h2.head-ic:nth-child(odd) .icon { color: var(--gold); }
+
+/* заголовки — печатный, праздничный serif */
+body.santa-theme h1,
+body.santa-theme h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: .01em;
+}
+body.santa-theme .navbar-brand {
+    font-family: Georgia, serif;
+    font-size: 1.25rem;
+}
+body.santa-theme .brand-hat {
+    width: 1.35em;
+    height: 1.35em;
+    color: var(--red);
+    vertical-align: -0.22em;
+}
+body.santa-theme .foot-flake {
+    width: .9em;
+    height: .9em;
+    color: var(--link);
+    vertical-align: -0.08em;
+}
+body.santa-theme .btn-ic {
+    color: currentColor;
+}
+
+/* кнопка «+» (добавить желание) */
+body.santa-theme .btn .icon { vertical-align: -0.18em; }
+
+/* ---------------- рейтинг-звёзды ---------------- */
+body.santa-theme .stars {
+    display: inline-flex;
+    gap: .12rem;
+    vertical-align: -0.18em;
+}
+body.santa-theme .stars svg {
+    width: 1.02rem;
+    height: 1.02rem;
+}
+body.santa-theme .stars .st-on {
+    fill: var(--gold);
+    stroke: none;
+}
+body.santa-theme .stars .st-off {
+    fill: none;
+    stroke: var(--muted);
+    opacity: .6;
+}
+
+/* таблицы полностью в тёмной палитре (bg-white убран) */
+body.santa-theme .table {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* пустые состояния */
+body.santa-theme .empty-hint {
+    color: var(--muted);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: .6rem .9rem;
+}
+
+/* мелкие штрихи */
+body.santa-theme main { padding-bottom: 3rem; }
+body.santa-theme .navbar { margin-bottom: 2rem !important; }
+
+/* ---------------- motion rule 5: link underline draw, card/row lift, button press ---------------- */
+body.santa-theme main a:not(.btn) {
+    text-decoration: none;
+    position: relative;
+}
+body.santa-theme main a:not(.btn)::after {
+    content: "";
+    position: absolute; left: 0; bottom: -2px;
+    width: 100%; height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .18s ease;
+}
+body.santa-theme main a:not(.btn):hover::after { transform: scaleX(1); }
+body.santa-theme .btn:active { transform: translateY(0) scale(.985); }
+
+@media (prefers-reduced-motion: reduce) {
+    body.santa-theme main a:not(.btn)::after { transition: none; }
+    body.santa-theme .btn:active { transform: none; }
+}
+
+/* landing grid: 3 feature cards across the wrap */
+.fcards { grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--s-5); }
+@media (max-width: 1023px) { .fcards { grid-template-columns: 1fr; } }
+.fcard h3 { font-size: 17px; letter-spacing: -0.01em; margin-bottom: 6px; }
+.fcard p { color: var(--p-muted); font-size: 14.5px; }
+.hero { padding-bottom: 190px; }
+.hero__window { max-width: 980px; margin: 44px auto -150px; }
+.ground-inverse { padding-top: 72px; padding-bottom: 72px; }
+.ground-inverse .swin { box-shadow: 0 30px 70px -32px rgb(0 0 0 / .35); }
